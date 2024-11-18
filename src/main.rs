@@ -1,5 +1,4 @@
 use axum::*;
-use body::Body;
 use email_address::EmailAddress;
 use http::StatusCode;
 use response::Html;
@@ -22,10 +21,10 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn create_user(Json(create_user): Json<CreateUser>) -> (StatusCode) {
+async fn create_user(Json(_): Json<CreateUser>) -> StatusCode {
     StatusCode::OK
 }
-
+#[allow(dead_code)]
 #[derive(Deserialize)]
 struct CreateUser {
     username: UserName,
@@ -47,6 +46,7 @@ impl Email {
             Err(EmailError)
         }
     }
+    #[allow(dead_code)]
     pub fn get(&self) -> &str {
         &self.0
     }
@@ -76,20 +76,21 @@ pub enum UserNameError {
 
 impl UserName {
     pub fn try_new(username: String) -> Result<Self, UserNameError> {
-        let INVALID_CHARS = "!§$%&/()=?";
+        let invalid_chars = "!§$%&/()=?";
         if username.len() < 12 {
             Err(UserNameError::TooShort)
         } else if username.len() >= 32 {
             Err(UserNameError::TooLong)
         } else {
             for char in username.chars() {
-                if INVALID_CHARS.contains(char) {
+                if invalid_chars.contains(char) {
                     return Err(UserNameError::InvalidCharacter(char.to_string()));
                 }
             }
             Ok(Self(username))
         }
     }
+    #[allow(dead_code)]
     pub fn get(&self) -> &str {
         &self.0
     }
