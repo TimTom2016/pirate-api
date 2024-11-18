@@ -1,0 +1,12 @@
+[package]
+name = "pirate_api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.7.0"
+email_address = {version="0.2.9",default-features = false}
+serde = {version="1.0",features = ["derive"]}
+thiserror = "2.0.3"
+tokio = { version = "1.0", features = ["full"] }
+tracing-subscriber = "0.3.0"
