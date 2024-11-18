@@ -10,7 +10,6 @@ use thiserror::Error;
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-
     // build our application with a route
     let app = Router::new()
         // `GET /` goes to `root`
