@@ -7,6 +7,8 @@ on:
 
 jobs:
   create-release:
+    permissions: # Add this section
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -14,6 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Generate a changelog
+
         uses: orhun/git-cliff-action@v2
         with:
           config: .github/cliff.toml
