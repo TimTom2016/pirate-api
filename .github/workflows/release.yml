@@ -6,18 +6,23 @@ on:
       - "v*"
 
 jobs:
-  create-release:
-    permissions: # Add this section
-      contents: write
+  release:
+    name: Create Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Generate a changelog
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
 
+      - name: Build Release Binary
+        run: cargo build --release
+
+      - name: Generate Release Changelog
         uses: orhun/git-cliff-action@v2
         with:
           config: .github/cliff.toml
@@ -25,29 +30,10 @@ jobs:
         env:
           OUTPUT: CHANGES.md
 
-      - name: Create release
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           body_path: CHANGES.md
-          files: |
-            target/release/pirate_api
-          token: ${{ secrets.GITHUB_TOKEN }}
+          files: target/release/pirate_api
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Build
-        run: cargo build --release
-
-      - name: Upload binary artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: pirate-api
-          path: target/release/pirate_api
